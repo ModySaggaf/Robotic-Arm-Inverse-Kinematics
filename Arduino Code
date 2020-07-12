@@ -1,0 +1,39 @@
+#include <Servo.h>
+Servo S1;
+Servo S2;
+
+//Given Parameters
+int L1=20; //Length of the first part of the arm
+int L2=30; //Length of the second part of the arm
+int theta=70; //End effector's angle in degrees
+float X=29.0544567108; //End effector's X coordinate
+float Y=35.0311813354; //End effector's Y coordinate
+float pi=3.141592654; //Pi, the mathmatical constant
+
+//Unknown Parameters
+float phy1; //First servo rotating angle in degrees
+float phy2; //Second servo rotating angle in degrees
+float phy2Radian; //Seond servo rotating angle in radians
+
+void setup()
+{
+//Calculating the unkown parameters using equations
+    phy2Radian=acos((sq(X)+sq(Y)-sq(L1)-sq(L2))/(2*L1*L2));
+    phy2=(phy2Radian/pi)*180;
+  
+    phy1 = theta-phy2;
+  
+//Printing the motors' angles
+  	Serial.begin(9600); 
+    Serial.print("The First Motor's Angle = "); Serial.println(phy1);
+    Serial.print("The Second Motor's Angle = "); Serial.println(phy2); 
+}
+
+void loop()
+{
+  S1.attach(2);
+  S2.attach(3);
+  
+  S1.write(phy1); //Rotating the first motor with the angle phy1
+  S2.write(theta); //Rotating the second motor with the angle phy1+phy2
+}
